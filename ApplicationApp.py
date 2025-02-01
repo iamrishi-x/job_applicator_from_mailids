@@ -4,14 +4,14 @@ import smtplib
 import os
 from email.message import EmailMessage
 from mail_template import User_data
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 
 # Load environment variables
-load_dotenv()
+# load_dotenv()
 
 # Retrieve email and password from environment variables
-EMAIL_ADDRESS = os.environ.get("EMAIL_ADDRESS")
-APP_PASSWORD = os.environ.get("APP_PASSWORD")
+EMAIL_ADDRESS = "rushibagul4444@gmail.com"
+APP_PASSWORD = "xxxx xxxx xxxx xxxx"
 
 # Function to get recipients from Excel
 def GetRecipients():
@@ -50,9 +50,9 @@ def GetRecipients():
 st.set_page_config(page_title="Automated Email Sender", layout="wide")
 
 # Sidebar - Sender Information and Resume Upload
-st.sidebar.title("Navigation")
-st.sidebar.subheader("Sender Information")
-sender_name = st.sidebar.text_input("Your Name:")
+st.sidebar.title("👤 Sender Information ")
+# st.sidebar.subheader("Sender Information")
+sender_name = st.sidebar.text_input("Your Name:",value="Rushi Bagul")
 sender_email = st.sidebar.text_input("Your Email Address:", value=EMAIL_ADDRESS)
 app_password = st.sidebar.text_input("App Password:", value=APP_PASSWORD, type="password")
 resume_file = st.sidebar.file_uploader("📄 Upload Resume (PDF, DOCX, TXT)", type=["pdf", "docx", "txt"])
