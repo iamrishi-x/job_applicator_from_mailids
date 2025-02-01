@@ -17,7 +17,8 @@ APP_PASSWORD = "xxxx xxxx xxxx xxxx"
 def GetRecipients():
     #EXCEL_PATH = r"data\Mail_id.xlsx"
     #file = st.sidebar.file_uploader("Upload Excel or CSV File with Emails", type=["xlsx", "csv"])
-    EXCEL_PATH = r"data\Mail_id.xlsx"
+    EXCEL_PATH = "https://raw.githubusercontent.com/iamrishi-x/job_applicator_from_mailids/main/data/Mail_id.xlsx"
+    #EXCEL_PATH = r"data\Mail_id.xlsx"
     # Read the Excel file and clean column names
     df = pd.read_excel(EXCEL_PATH)
     # df = pd.DataFrame()
