@@ -43,8 +43,8 @@ def GetRecipients():
     if BCC_EMAILS:
         st.write(f"### Selected Cities: {', '.join(selected_cities)}")
         st.write(f"### Total Recipients: {len(BCC_EMAILS)}")
-        st.dataframe(pd.DataFrame({"Recipients": BCC_EMAILS}))
-
+        #st.dataframe(pd.DataFrame({"Recipients": BCC_EMAILS}))
+        
     return BCC_EMAILS
 
 # Layout with Sidebar and Main Panel
@@ -65,7 +65,14 @@ st.subheader("📌 Email Details")
 subject,body = User_data(sender_name)
 subject = st.text_input("Email Subject", value=subject)
 body = st.text_area("Email Body", value=body, height=350)
-
+st.markdown(
+    """
+    <div style="position: fixed; bottom: 0; left: 0; width: 100%; background-color: #0E1117; padding: 15px; text-align: center;">
+        © <a href="https://github.com/iamrishi-x" target="_blank">Rishi Bagul</a> | Made with ❤️
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 # Get recipients
 BCC_EMAILS = GetRecipients()
 
@@ -91,6 +98,7 @@ if st.button("🚀 Send Emails"):
             server.login(sender_email, app_password)  # Use sender's email and app password for login
             server.send_message(msg)
             server.quit()
-            st.success("✅ Email sent successfully!")
+            with st.spinner("Processing..."):
+                st.success("✅ Email sent successfully!")
         except Exception as e:
             st.error(f"❌ Failed to send email: {e}")
