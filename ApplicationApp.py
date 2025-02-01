@@ -57,8 +57,7 @@ sender_name = st.sidebar.text_input("Your Name:",value="Rushi Bagul")
 sender_email = st.sidebar.text_input("Your Email Address:", value=EMAIL_ADDRESS)
 app_password = st.sidebar.text_input("App Password:", value=APP_PASSWORD, type="password")
 resume_file = st.sidebar.file_uploader("📄 Upload Resume (PDF, DOCX, TXT)", type=["pdf", "docx", "txt"])
-st.sidebar.write("---")
-st.sidebar.write("AI App created by @ Rishi Bagul")  
+
 # Main Panel - Email Subject and Body
 st.title("📧 Automated Email Sender")
 
