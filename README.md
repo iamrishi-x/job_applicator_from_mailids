@@ -2,6 +2,7 @@
 
 This is a Python application built with **Streamlit** to automate sending emails with attachments. The application allows you to upload a CSV/Excel file with recipient emails, choose categories (e.g., cities), and send personalized emails along with attachments (e.g., resumes). The sender's email and app password are retrieved from environment variables, and the app integrates with Gmail's SMTP server.
 
+Check deployed app - [Job Applicator Agent](https://rishi-job-applicator.streamlit.app/)
 ---
 
 ## Table of Contents
@@ -94,7 +95,7 @@ Job-applicator-from-mailids/
 ├── ApplicationApp.py
 ├── .env
 ├── data/
-│    ├──Mail_id.xlsx
+│    ├──Mail_id.xlsx [If not present request on mail]
 |    └──resume.pdf
 ├── mail_template/
 │   └── User_data.py

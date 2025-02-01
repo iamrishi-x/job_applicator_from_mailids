@@ -4,14 +4,16 @@ import smtplib
 import os
 from email.message import EmailMessage
 from mail_template import User_data
-# from dotenv import load_dotenv
+from dotenv import load_dotenv,find_dotenv
 
-# Load environment variables
-# load_dotenv()
-
-# Retrieve email and password from environment variables
 EMAIL_ADDRESS = "rushibagul4444@gmail.com"
 APP_PASSWORD = "xxxx xxxx xxxx xxxx"
+
+# Load environment variables
+if find_dotenv():
+    load_dotenv()
+    EMAIL_ADDRESS = os.getenv("EMAIL_ADDRESS")
+    APP_PASSWORD = os.getenv("APP_PASSWORD")
 
 # Function to get recipients from Excel
 def GetRecipients():
@@ -41,8 +43,8 @@ def GetRecipients():
     BCC_EMAILS = list(set(BCC_EMAILS))
 
     if BCC_EMAILS:
-        st.write(f"### Selected Cities: {', '.join(selected_cities)}")
-        st.write(f"### Total Recipients: {len(BCC_EMAILS)}")
+        st.write(f"###### Selected Cities: :blue[{', '.join(selected_cities)}]")
+        st.write(f"###### Total Recipients: :red[{len(BCC_EMAILS)}]")
         #st.dataframe(pd.DataFrame({"Recipients": BCC_EMAILS}))
         
     return BCC_EMAILS
@@ -98,7 +100,6 @@ if st.button("🚀 Send Emails"):
             server.login(sender_email, app_password)  # Use sender's email and app password for login
             server.send_message(msg)
             server.quit()
-            with st.spinner("Processing..."):
-                st.success("✅ Email sent successfully!")
+            st.success("✅ Email sent successfully!")
         except Exception as e:
             st.error(f"❌ Failed to send email: {e}")
