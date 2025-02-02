@@ -4,31 +4,41 @@ import smtplib
 import os
 from email.message import EmailMessage
 from mail_template import User_data
-from dotenv import load_dotenv,find_dotenv
+from dotenv import load_dotenv, find_dotenv
 
-EMAIL_ADDRESS = "rushibagul4444@gmail.com"
-APP_PASSWORD = "xxxx xxxx xxxx xxxx"
-
-# Load environment variables
 if find_dotenv():
     load_dotenv()
     EMAIL_ADDRESS = os.getenv("EMAIL_ADDRESS")
     APP_PASSWORD = os.getenv("APP_PASSWORD")
+    APPLICATION_PASSWORD = os.getenv("APPLICATION_PASSWORD")
+else:
+    # Load password from Streamlit secrets
+    APPLICATION_PASSWORD = st.secrets["authentication"]["APPLICATION_PASSWORD"]
+    EMAIL_ADDRESS =st.secrets["authentication"]["EMAIL_ADDRESS"]
+    APP_PASSWORD = st.secrets["authentication"]["APP_PASSWORD"]
+
+# Check authentication status
+if "authenticated" not in st.session_state:
+    st.session_state["authenticated"] = False
+
+# Authentication Page
+if not st.session_state["authenticated"]:
+    st.title("🔒 Login Required")
+    password = st.text_input("Enter Password:", type="password")
+    if st.button("Login"):
+        #print(f"original - {password} and entered - {APPLICATION_PASSWORD}")
+        if password == APPLICATION_PASSWORD:
+            st.session_state["authenticated"] = True
+            st.rerun()  # Refresh the page after successful login
+        else:
+            st.error("❌ Incorrect Password. Try Again!")
+    st.stop()  # Stop execution until login is successful
+
 
 # Function to get recipients from Excel
 def GetRecipients():
-    #EXCEL_PATH = r"data\Mail_id.xlsx"
-    #file = st.sidebar.file_uploader("Upload Excel or CSV File with Emails", type=["xlsx", "csv"])
     EXCEL_PATH = "https://raw.githubusercontent.com/iamrishi-x/job_applicator_from_mailids/main/data/Mail_id.xlsx"
-    #EXCEL_PATH = r"data\Mail_id.xlsx"
-    # Read the Excel file and clean column names
     df = pd.read_excel(EXCEL_PATH)
-    # df = pd.DataFrame()
-    # if file:
-    #     if file.name.endswith(".xlsx"):
-    #         df = pd.read_excel(file)
-    #     elif file.name.endswith(".csv"):
-    #         df = pd.read_csv(file)
     df.columns = df.columns.astype(str).str.strip()
 
     st.sidebar.subheader("Select Cities for Recipients")
@@ -45,8 +55,7 @@ def GetRecipients():
     if BCC_EMAILS:
         st.write(f"###### Selected Cities: :blue[{', '.join(selected_cities)}]")
         st.write(f"###### Total Recipients: :red[{len(BCC_EMAILS)}]")
-        #st.dataframe(pd.DataFrame({"Recipients": BCC_EMAILS}))
-        
+
     return BCC_EMAILS
 
 # Layout with Sidebar and Main Panel
@@ -54,8 +63,7 @@ st.set_page_config(page_title="Automated Email Sender", layout="wide")
 
 # Sidebar - Sender Information and Resume Upload
 st.sidebar.title("👤 Sender Information ")
-# st.sidebar.subheader("Sender Information")
-sender_name = st.sidebar.text_input("Your Name:",value="Rushi Bagul")
+sender_name = st.sidebar.text_input("Your Name:", value="Rushi Bagul")
 sender_email = st.sidebar.text_input("Your Email Address:", value=EMAIL_ADDRESS)
 app_password = st.sidebar.text_input("App Password:", value=APP_PASSWORD, type="password")
 resume_file = st.sidebar.file_uploader("📄 Upload Resume (PDF, DOCX, TXT)", type=["pdf", "docx", "txt"])
@@ -64,9 +72,10 @@ resume_file = st.sidebar.file_uploader("📄 Upload Resume (PDF, DOCX, TXT)", ty
 st.title("📧 Automated Email Sender")
 
 st.subheader("📌 Email Details")
-subject,body = User_data(sender_name)
+subject, body = User_data(sender_name)
 subject = st.text_input("Email Subject", value=subject)
 body = st.text_area("Email Body", value=body, height=350)
+
 st.markdown(
     """
     <div style="position: fixed; bottom: 0; left: 0; width: 100%; background-color: #0E1117; padding: 15px; text-align: center;">
@@ -75,6 +84,7 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
+
 # Get recipients
 BCC_EMAILS = GetRecipients()
 
@@ -97,7 +107,7 @@ if st.button("🚀 Send Emails"):
         try:
             server = smtplib.SMTP("smtp.gmail.com", 587)
             server.starttls()
-            server.login(sender_email, app_password)  # Use sender's email and app password for login
+            server.login(sender_email, app_password)
             server.send_message(msg)
             server.quit()
             st.success("✅ Email sent successfully!")
